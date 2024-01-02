@@ -1,0 +1,42 @@
+from selenium import webdriver
+from datetime import datetime
+import time
+import openpyxl
+import os
+
+basedir = "C:\Python\Cagepa\Cotações-2023-12"
+excel_path = "C:\Python\Cagepa\Filtrados.xlsx"
+planilha = openpyxl.load_workbook(excel_path)
+sheet = planilha.active
+
+itens = []
+for i in range(1,sheet.max_row):
+    itens.append((sheet.cell(row=i+1, column=2).value))
+
+link_itens = []
+for i in range(1,sheet.max_row):
+    link_item = []
+    for j in range(4,7):
+        link_item.append((sheet.cell(row=i+1, column=j).value))
+    link_itens.append(link_item)
+
+for i in range(len(itens)):
+    ordem=1
+    try:
+        os.makedirs(os.path.join(basedir, itens[i]))
+        print(f'Criando a subpasta para o item: {itens[i]}')
+        for j in range(len(link_itens[i])):
+            driver = webdriver.Chrome()
+            driver.get(link_itens[i][j])
+            driver.get_screenshot_as_file(f"{basedir}\{itens[i]}\{itens[i]}-{datetime.now().date()}-0{ordem}.png")
+            print(f"O link {ordem} da subpasta {itens[i]} foi printado com sucesso!")
+            driver.quit()
+            ordem+=1
+    
+    except FileExistsError:
+        None
+    except OSError:
+        print(f"Infelizmente, ocorreu um erro ao tentar criar a subpasta {itens[i]}, favor verifique o nome da pasta!")
+        
+driver.quit()
+print('Trabalho finalizado!')
