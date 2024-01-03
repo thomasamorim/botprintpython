@@ -3,7 +3,18 @@ from datetime import datetime
 import time
 import openpyxl
 import os
+from fpdf import FPDF
 
+def criar_pdf(filename,image,link):
+    pdf = FPDF(orientation='P', format='A4')
+    pdf.add_page()
+    pdf.set_font('Arial','', 12)
+    texto = f'O seguinte print da página {link} foi automaticamente retirado na data {datetime.now().date()}:'
+    largura_texto = pdf.get_string_width(texto)
+    pdf.multi_cell(0, 10, txt=texto, border = 0, align="C")
+    pdf.image(image,x=50,y=75,w=100)
+    pdf.output(filename,'F')
+    
 basedir = "C:\Python\Cagepa\Cotações-2023-12"
 excel_path = "C:\Python\Cagepa\Filtrados.xlsx"
 planilha = openpyxl.load_workbook(excel_path)
@@ -29,6 +40,7 @@ for i in range(len(itens)):
             driver = webdriver.Chrome()
             driver.get(link_itens[i][j])
             driver.get_screenshot_as_file(f"{basedir}\{itens[i]}\{itens[i]}-{datetime.now().date()}-0{ordem}.png")
+            criar_pdf(f"{basedir}\{itens[i]}\{itens[i]}-{datetime.now().date()}-0{ordem}.pdf",f"{basedir}\{itens[i]}\{itens[i]}-{datetime.now().date()}-0{ordem}.png",link_itens[i][j])
             print(f"O link {ordem} da subpasta {itens[i]} foi printado com sucesso!")
             driver.quit()
             ordem+=1
