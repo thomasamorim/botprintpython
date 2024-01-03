@@ -15,7 +15,7 @@ def criar_pdf(filename,image,link):
     head_pdf.add_page()
     head_pdf.set_font('Arial','',12)
     head_pdf.set_xy(5,40)
-    texto = f'O seguinte print da página {link} foi automaticamente retirado na data {datetime.now().date()}:'
+    texto = f'O seguinte print da página {link} foi automaticamente retirado na data e hora: {datetime.now().strftime("%Y-%m-%d %H:%M:%S")}.'
     head_pdf.multi_cell(0, 6, txt=texto, border = 1, align="C")
     head_pdf.image(image,x=15,y=100,w=180,h=125)
     head_pdf.output('head.pdf','F')
