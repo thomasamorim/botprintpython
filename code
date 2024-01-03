@@ -4,19 +4,43 @@ import time
 import openpyxl
 import os
 from fpdf import FPDF
+from PyPDF2 import PdfReader, PdfWriter
 
 def criar_pdf(filename,image,link):
-    pdf = FPDF(orientation='P', format='A4')
-    pdf.add_page()
-    pdf.set_font('Arial','', 12)
+    class FPDFHEAD(FPDF):
+        def header(self):
+            self.image('head.png',x=0,y=0,w=210,h=25)
+            
+    head_pdf = FPDFHEAD("P","mm","A4")
+    head_pdf.add_page()
+    head_pdf.set_font('Arial','',12)
+    head_pdf.set_xy(5,40)
     texto = f'O seguinte print da página {link} foi automaticamente retirado na data {datetime.now().date()}:'
-    largura_texto = pdf.get_string_width(texto)
-    pdf.multi_cell(0, 10, txt=texto, border = 0, align="C")
-    pdf.image(image,x=50,y=75,w=100)
-    pdf.output(filename,'F')
+    head_pdf.multi_cell(0, 6, txt=texto, border = 1, align="C")
+    head_pdf.image(image,x=15,y=100,w=180,h=125)
+    head_pdf.output('head.pdf','F')
     
-basedir = "C:\Python\Cagepa\Cotações-2023-12"
-excel_path = "C:\Python\Cagepa\Filtrados.xlsx"
+    class FPDFBack(FPDF):
+        def header(self):
+            self.image('back.png',x=0,y=0,w=210,h=297)
+    
+    background_pdf = FPDFBack("P","mm","A4")
+    background_pdf.output('back.pdf','F')
+
+    pdf_writer = PdfWriter()
+    pdf_reader = PdfReader('head.pdf')
+
+    for page in pdf_reader.pages:
+        watermark_pdf = PdfReader('back.pdf')
+        watermark_page = watermark_pdf.pages[0]
+        watermark_page.merge_page(page)
+        pdf_writer.add_page(watermark_page)
+    
+
+    pdf_writer.write(filename)
+     
+basedir = "C:\\Users\\804473\\Python\\Cotacoes-2024-01"
+excel_path = "C:\\Users\\804473\\Python\\Historico.xlsx"
 planilha = openpyxl.load_workbook(excel_path)
 sheet = planilha.active
 
