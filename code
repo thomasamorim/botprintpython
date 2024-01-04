@@ -63,6 +63,7 @@ for i in range(len(itens)):
         for j in range(len(link_itens[i])):
             driver = webdriver.Chrome()
             driver.get(link_itens[i][j])
+            driver.maximize_window()
             driver.get_screenshot_as_file(f"{basedir}\{itens[i]}\{itens[i]}-{datetime.now().date()}-0{ordem}.png")
             criar_pdf(f"{basedir}\{itens[i]}\{itens[i]}-{datetime.now().date()}-0{ordem}.pdf",f"{basedir}\{itens[i]}\{itens[i]}-{datetime.now().date()}-0{ordem}.png",link_itens[i][j])
             print(f"O link {ordem} da subpasta {itens[i]} foi printado com sucesso!")
