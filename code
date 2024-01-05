@@ -47,6 +47,10 @@ sheet = planilha.active
 itens = []
 for i in range(1,sheet.max_row):
     itens.append((sheet.cell(row=i+1, column=2).value))
+    
+codigo = []
+for i in range(1,sheet.max_row):
+    codigo.append((sheet.cell(row=i+1,column=1).value))
 
 link_itens = []
 for i in range(1,sheet.max_row):
@@ -65,7 +69,7 @@ for i in range(len(itens)):
             driver.get(link_itens[i][j])
             driver.maximize_window()
             driver.get_screenshot_as_file(f"{basedir}\{itens[i]}\{itens[i]}-{datetime.now().date()}-0{ordem}.png")
-            criar_pdf(f"{basedir}\{itens[i]}\{itens[i]}-{datetime.now().date()}-0{ordem}.pdf",f"{basedir}\{itens[i]}\{itens[i]}-{datetime.now().date()}-0{ordem}.png",link_itens[i][j])
+            criar_pdf(f"{basedir}\{itens[i]}\{codigo[i]}-{itens[i]}-{datetime.now().date()}-0{ordem}.pdf",f"{basedir}\{itens[i]}\{itens[i]}-{datetime.now().date()}-0{ordem}.png",link_itens[i][j])
             print(f"O link {ordem} da subpasta {itens[i]} foi printado com sucesso!")
             driver.quit()
             ordem+=1
